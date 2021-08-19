@@ -1,16 +1,16 @@
 import React from 'react';
-import Register from './Register';
 import Home from './Home';
+import List from './List';
 import logo from './assets/img/logo.png';
 import img1 from './assets/img/home-service-1.png';
 import img2 from './assets/img/home-service-2.jpg';
 import {Router,Link, Route,useHistory} from 'react-router-dom';
 
- function Login(){
+ function Search(){
      const history=useHistory();
      return(
      <div>
-        <title>Login</title>
+        <title>Search</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
@@ -38,7 +38,7 @@ import {Router,Link, Route,useHistory} from 'react-router-dom';
             
               <div className="card bg-dark text-white">
                 <div className="card-header"> 
-                  <h4 className="card-title text-center">Login</h4></div>
+                  <h4 className="card-title text-center">Search</h4></div>
                 <div className="card-body">
 
                 
@@ -47,17 +47,20 @@ import {Router,Link, Route,useHistory} from 'react-router-dom';
 
                   <form action="login" className="was-validated">
                     <div className="form-group">
-                      <label htmlFor="uname">Username:</label>
-                      <input type="text" className="form-control" id="uname" placeholder="Enter username" name="uname" required />
-                      <div className="valid-feedback">Valid.</div>
-                      <div className="invalid-feedback">Please fill out this field.</div>
+                      <label htmlFor="uname">Pincode</label>
+                      <input type="number" className="form-control" id="pcode" placeholder="Pincode" name="pcode" required />
                     </div>
 
                     <div className="form-group">
-                      <label htmlFor="pwd">Password:</label>
-                      <input type="password" className="form-control" id="pwd" placeholder="Enter password" name="pswd" required />
-                      <div className="valid-feedback">Valid.</div>
-                      <div className="invalid-feedback">Please fill out this field.</div>
+                      <label htmlFor="pwd">Select Service</label>
+                      <select name="serviceproviders" class="custom-select">
+                      <option selected>Select Service</option>
+                      <option value="Cleaning Expert">Cleaning Expert</option>
+                      <option value="Cook">Cook</option>
+                      <option value="Electrician">Electrician</option>
+                      <option value="Househelp">Househelp</option>
+                      <option value="Plumber">Plumber</option>
+                      </select>
                     </div>
 
                    
@@ -66,9 +69,9 @@ import {Router,Link, Route,useHistory} from 'react-router-dom';
                   
                 </div>
                 
-                <div><button type="button" className="btn btn-primary btn-block" onClick={()=>history.push('/search')}>Login</button></div>
+                {/* <div><button type="submit" className="btn btn-primary btn-block">Login</button></div> */}
                 
-                <div><button type="button" className="btn1 btn-primary btn-block" onClick={()=>history.push('/register')}>New? Register</button></div>
+                <div><button type="button" className="btn btn-primary btn-block" onClick={()=>history.push('/list')}>Search</button></div>
                 
               </div>
               
@@ -84,4 +87,4 @@ import {Router,Link, Route,useHistory} from 'react-router-dom';
          
      
  };
- export default Login
+ export default Search

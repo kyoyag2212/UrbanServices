@@ -23,3 +23,10 @@ code {
 .btn2 {
   margin: 670px auto;
 }
+
+.star-rating {
+  line-height:32px;
+  font-size:1.25em;
+}
+
+.star-rating .fa-star{color: rgb(3, 3, 3);}

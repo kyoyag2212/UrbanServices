@@ -2,7 +2,9 @@ import React from 'react';
 import logo from './assets/img/logo.png';
 import img1 from './assets/img/home-service-1.png';
 import img2 from './assets/img/home-service-2.jpg';
+import {Router,Link, Route,useHistory} from 'react-router-dom';
  function Register(){
+  const history=useHistory();
      return(
      <div>
         <title>Login</title>
@@ -74,7 +76,7 @@ import img2 from './assets/img/home-service-2.jpg';
                   
                 </div>
                 <div>
-                    <button type="submit" className="btn2 btn-primary btn-block">Register</button>
+                <div><button type="button" className="btn2 btn-primary btn-block" onClick={()=>history.push('/login')}> Register</button></div>
                     </div>
               </div>
               
