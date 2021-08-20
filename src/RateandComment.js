@@ -5,9 +5,16 @@ import logo from './assets/img/logo.png';
 import img1 from './assets/img/home-service-1.png';
 import img2 from './assets/img/home-service-2.jpg';
 import {Router,Link, Route,useHistory} from 'react-router-dom';
-
+import { Rating, RatingView } from 'react-simple-star-rating';
+import { useState } from 'react';
  function RateandComment(){
      const history=useHistory();
+     const [rating, setRating] = useState(0);
+     const handleRating = (rate) => {
+        setRating(rate)
+        
+      }
+    
      return(
      <div>
         <title>Search</title>
@@ -45,7 +52,9 @@ import {Router,Link, Route,useHistory} from 'react-router-dom';
                 <div class="row">
                  <div class="col-lg-12">
                  <label for="comment">Your Rating</label>
-                
+                 <div className='App'>
+                <Rating onClick={handleRating} ratingValue={rating} /* Rating Props */ />
+                 </div>
    
    
                 </div>

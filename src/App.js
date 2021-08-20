@@ -8,6 +8,7 @@ import List from './List';
 import RateandComment from './RateandComment';
 import RegisterServices from './RegisterServices';
 import Comments from './Comments';
+import Profile from './Profile';
 import {Router,Link, Route} from 'react-router-dom';
  
 function App() {
@@ -21,6 +22,7 @@ function App() {
       <Route exact path='/rateandcomment' component={RateandComment}/>
       <Route exact path='/registerservices' component={RegisterServices}/>
       <Route exact path='/comments' component={Comments}/>
+      <Route exact path='/profile' component={Profile}/>
     </div>
   );
 
