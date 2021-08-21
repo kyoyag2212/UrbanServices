@@ -11,7 +11,8 @@ const router = express.Router()
 // In server.js, books route is specified as '/books'
 // this means that '/all' translates to '/books/all'
 router.get('/all', usersRoutes.usersAll)
-
+router.post('/login',usersRoutes.usersSelect)
+router.post('/create',usersRoutes.userCreate)
 
 
 // Export router

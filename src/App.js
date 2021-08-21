@@ -10,6 +10,8 @@ import RegisterServices from './RegisterServices';
 import Comments from './Comments';
 import Profile from './Profile';
 import {Router,Link, Route} from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
  
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
       <Route exact path='/registerservices' component={RegisterServices}/>
       <Route exact path='/comments' component={Comments}/>
       <Route exact path='/profile' component={Profile}/>
+      <ToastContainer />
     </div>
   );
 

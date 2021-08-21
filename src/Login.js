@@ -1,13 +1,60 @@
-import React from 'react';
+import React,{useState} from 'react';
 import Register from './Register';
 import Home from './Home';
 import logo from './assets/img/logo.png';
 import img1 from './assets/img/home-service-1.png';
 import img2 from './assets/img/home-service-2.jpg';
 import {Router,Link, Route,useHistory} from 'react-router-dom';
+import axios from 'axios'
+import { toast } from "react-toastify";
+
+const handleUserLogin = async (uname, pwd) => {
+  
+ 
+  try {
+    const response=await axios
+    .post("http://localhost:4001/users/login", {
+      username: uname,
+      password: pwd,
+    })
+    if( response.data.message=='successful')
+    {
+      return true
+    }
+    else if(response.data.message=='incorrect')
+    {
+      return false
+    }
+    else {
+      console.log(response.data.message)
+      return false
+    }
+  } catch (error) {
+    console.log(error)
+      return false
+  }
+  
+};
 
  function Login(){
      const history=useHistory();
+     const [uname, setuname] = useState("");
+     const [pwd, setpwd] = useState("");
+     const OnSubmit=async ()=>{
+    
+      const response=await handleUserLogin(uname,pwd)
+      if(response)
+      {
+        toast.success("Login Successful!")
+        
+        history.push('/search')
+   
+      }
+      else
+      {
+        toast.error("Login UnSuccessful! Try Again")
+      }
+     }
      return(
      <div>
         <title>Login</title>
@@ -48,14 +95,20 @@ import {Router,Link, Route,useHistory} from 'react-router-dom';
                   <form action="login" className="was-validated">
                     <div className="form-group">
                       <label htmlFor="uname">Username:</label>
-                      <input type="text" className="form-control" id="uname" placeholder="Enter username" name="uname" required />
+                      <input type="text" className="form-control" id="uname" placeholder="Enter username" name="uname"  onChange={(e) => {
+                        setuname(e.target.value);
+                      }}
+                      value={uname} required />
                       <div className="valid-feedback">Valid.</div>
                       <div className="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div className="form-group">
                       <label htmlFor="pwd">Password:</label>
-                      <input type="password" className="form-control" id="pwd" placeholder="Enter password" name="pswd" required />
+                      <input type="password" className="form-control" id="pwd" placeholder="Enter password" name="pswd"  onChange={(e) => {
+                        setpwd(e.target.value);
+                      }}
+                      value={pwd} required />
                       <div className="valid-feedback">Valid.</div>
                       <div className="invalid-feedback">Please fill out this field.</div>
                     </div>
@@ -66,7 +119,7 @@ import {Router,Link, Route,useHistory} from 'react-router-dom';
                   
                 </div>
                 
-                <div><button type="button" className="btn btn-primary btn-block" onClick={()=>history.push('/search')}>Login</button></div>
+                <div><button type="button" className="btn btn-primary btn-block" onClick={()=>OnSubmit()}>Login</button></div>
                 
                 <div><button type="button" className="btn1 btn-primary btn-block" onClick={()=>history.push('/register')}>New? Register</button></div>
                 

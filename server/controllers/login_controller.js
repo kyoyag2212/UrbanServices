@@ -1,10 +1,10 @@
 const knex = require('knex')({
-    client: 'sqlite3',
-    connection: {
-      filename: './urbanservices.db',
-    },
-    useNullAsDefault: true
-  })
+  client: 'sqlite3',
+  connection: {
+    filename: 'urbanservices.db',
+  },
+  useNullAsDefault: true
+})
 
 
 // Retrieve all books
@@ -20,6 +20,51 @@ exports.usersAll = async (req, res) => {
     .catch(err => {
       // Send a error message in response
       res.json({ message: `There was an error retrieving users: ${err}` })
+    })
+}
+
+exports.usersSelect = async (req, res) => {
+   
+  // Get all books from database
+  knex('users')
+  .where({ username:req.body.username })
+  .pluck('password')
+    .then(userData => {
+      // Send books extracted from database in response
+      if(userData==req.body.password){
+         res.json({ message: `successful` })
+      }
+      else{
+        res.json({ message: 'incorrect' })
+      }
+      
+    })
+    .catch(err => {
+      // Send a error message in response
+      res.json({ message: `There was an error retrieving users: ${err}` })
+    })
+}
+
+// Create new book
+exports.userCreate = async (req, res) => {
+ 
+  // Add new book to database
+  knex('users')
+    .insert({ // insert new record, a book
+
+      'username': req.body.username,
+      'password': req.body.password,
+      'user_type': req.body.user_type,
+      'email': req.body.email,
+      'u_phoneno': req.body.u_phoneno,
+    })
+    .then(() => {
+      // Send a success message in response
+      res.json({ message: 'registered' })
+    })
+    .catch(err => {
+      // Send a error message in response
+      res.json({ message: `There was an error creating def user: ${err}` })
     })
 }
 
