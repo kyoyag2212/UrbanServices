@@ -12,25 +12,102 @@ code {
     monospace;
 }
 
-.btn {
+.btn11 {
   margin: 340px auto;
+  border-radius: 10px;
 }
 
 .btn1 {
   margin: 400px auto;
+  border-radius: 10px;
 }
 
 .btn2 {
   margin: 670px auto;
+  border-radius: 10px;
 }
 
 .btn3 {
   margin: 450px auto;
+  border-radius: 10px;
 }
 
+.btn4 {
+  margin: 550px auto;
+  border-radius: 10px;
+}
+
+.btn5 {
+  margin: 20px ;
+  margin-right: 100px;
+ padding-inline: 40px;
+ border-radius: 10px;
+
+  
+
+}
+.btn6{
+  margin:264px;
+  margin-left: 100px;
+  border-radius: 10px;
+
+}
+
+.btn7{
+  margin:550px;
+  margin-right: 450px;
+  border-radius: 10px;
+  
+
+}
+
+.btn8{
+  margin:600px auto;
+  border-radius: 10px;
+  
+
+}
+.btn9{
+  margin:85px ;
+  margin-right: 220px;
+  border-radius: 75px;
+
+  
+
+}
+
+.btn10{
+  margin-top: 20px;
+  margin-right: 250px;
+  border-radius: 10px;
+  
+
+}
+
+.visible {
+  visibility: visible;
+}
+.invisible {
+  visibility: hidden;
+}
 .star-rating {
   line-height:32px;
   font-size:1.25em;
 }
 
+.bg-custom-1 {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.card1{
+  border-radius: 20px;
+
+
+}
+
 .star-rating .fa-star{color: rgb(3, 3, 3);}
+
+.table1{
+  margin: 20px auto;
+  padding: 50px auto;
+}

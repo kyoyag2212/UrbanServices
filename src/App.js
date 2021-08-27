@@ -12,8 +12,14 @@ import Profile from './Profile';
 import {Router,Link, Route} from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ShowServices from './ShowServices';
+import AdminLogin from './admin';
+import AdminPanel from './adminpanel';
+import AdminComment from './AdminComment';
+import AdminViewComments from './AdminViewComments';
  
 function App() {
+ 
   return (
     <div className="App">
       <Route exact path='/' component={Home} />
@@ -25,6 +31,11 @@ function App() {
       <Route exact path='/registerservices' component={RegisterServices}/>
       <Route exact path='/comments' component={Comments}/>
       <Route exact path='/profile' component={Profile}/>
+      <Route exact path='/showservices' component={ShowServices}/>
+      <Route exact path='/adminlogin' component={AdminLogin}/>
+      <Route exact path='/adminpanel' component={AdminPanel}/>
+      <Route exact path='/admincomment' component={AdminComment}/>
+      <Route exact path='/adminviewcomments' component={AdminViewComments}/>
       <ToastContainer />
     </div>
   );

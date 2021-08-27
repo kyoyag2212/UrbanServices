@@ -1,122 +1,391 @@
-const knex = require('knex')({
-  client: 'sqlite3',
+const knex = require("knex")({
+  client: "sqlite3",
   connection: {
-    filename: 'urbanservices.db',
+    filename: "urbanservices.db",
   },
-  useNullAsDefault: true
-})
+  useNullAsDefault: true,
+});
 
 
-// Retrieve all books
 exports.usersAll = async (req, res) => {
+
+  knex
+    .select("user_id","username","user_type","email","u_phoneno")
+    .from("users")
+    .then((userData) => {
    
-  // Get all books from database
-  knex.select('*') // select all records
-    .from('users') // from 'books' table
-    .then(userData => {
-      // Send books extracted from database in response
-      res.json(userData)
+      res.json(userData);
     })
-    .catch(err => {
-      // Send a error message in response
-      res.json({ message: `There was an error retrieving users: ${err}` })
+    .catch((err) => {
+   
+      res.json({ message: `There was an error retrieving users: ${err}` });
+    });
+};
+
+exports.getUserDetails = async (req, res) => {
+ 
+  knex("users")
+    .where({ username: req.body.username })
+    .select("user_id", "user_type", "email", "u_phoneno")
+    .then((userData) => {
+    
+      res.json({ userData });
     })
-}
+    .catch((err) => {
+    
+      res.json({ message: `There was an error retrieving users: ${err}` });
+    });
+};
 
 exports.usersSelect = async (req, res) => {
+
+  knex("users")
+    .where({ username: req.body.username })
+    .pluck("password")
+    .then((userData) => {
+     
+      if (userData == req.body.password) {
+        res.json({ message: `successful` });
+      } else {
+        res.json({ message: "incorrect" });
+      }
+    })
+    .catch((err) => {
    
-  // Get all books from database
-  knex('users')
-  .where({ username:req.body.username })
-  .pluck('password')
-    .then(userData => {
-      // Send books extracted from database in response
-      if(userData==req.body.password){
-         res.json({ message: `successful` })
-      }
-      else{
-        res.json({ message: 'incorrect' })
-      }
-      
-    })
-    .catch(err => {
-      // Send a error message in response
-      res.json({ message: `There was an error retrieving users: ${err}` })
-    })
-}
+      res.json({ message: `There was an error retrieving users: ${err}` });
+    });
+};
 
-// Create new book
+
 exports.userCreate = async (req, res) => {
- 
-  // Add new book to database
-  knex('users')
-    .insert({ // insert new record, a book
 
-      'username': req.body.username,
-      'password': req.body.password,
-      'user_type': req.body.user_type,
-      'email': req.body.email,
-      'u_phoneno': req.body.u_phoneno,
+  knex("users")
+    .insert({
+    
+
+      username: req.body.username,
+      password: req.body.password,
+      user_type: req.body.user_type,
+      email: req.body.email,
+      u_phoneno: req.body.u_phoneno,
     })
     .then(() => {
-      // Send a success message in response
-      res.json({ message: 'registered' })
+ 
+      res.json({ message: "registered" });
     })
-    .catch(err => {
-      // Send a error message in response
-      res.json({ message: `There was an error creating def user: ${err}` })
+    .catch((err) => {
+   
+      let error = err.message;
+
+      if (
+        error.endsWith(
+          "SQLITE_CONSTRAINT: UNIQUE constraint failed: users.username"
+        )
+      ) {
+        console.log(
+          error.endsWith(
+            "SQLITE_CONSTRAINT: UNIQUE constraint failed: users.username"
+          )
+        );
+        res.json({ message: `Unique` });
+      } else {
+        res.json({ message: `There was an error creating  user: ${err}` });
+      }
+    });
+};
+
+exports.serviceSearch = async (req, res) => {
+ 
+
+
+  knex
+    .select(
+     
+        "u.username","u.u_phoneno","s.description","s.experience"
+      ).avg('r.rating').from({ u:'users' })
+    
+    .leftJoin({r:"review"},"u.user_id","r.r_id")
+
+    .leftJoin({s:req.body.service_category},"u.user_id","s.sp_id")
+ 
+    .leftJoin({sp:"service_provider"},"u.user_id", "sp.sp_id")
+
+    .where("sp.pincode", req.body.pincode)
+    .andWhere("sp.service_category", req.body.service_category)
+    .groupBy("sp.sp_id")
+    .then((userData) => {
+      res.json(userData);
     })
-}
+    .catch((err) => {
+  
+      res.json({ message: `There was an error retrieving data: ${err}` });
+    });
+};
 
-// // Create new book
-// exports.booksCreate = async (req, res) => {
-//   // Add new book to database
-//   knex('books')
-//     .insert({ // insert new record, a book
-//       'author': req.body.author,
-//       'title': req.body.title,
-//       'pubDate': req.body.pubDate,
-//       'rating': req.body.rating
-//     })
-//     .then(() => {
-//       // Send a success message in response
-//       res.json({ message: `Book \'${req.body.title}\' by ${req.body.author} created.` })
-//     })
-//     .catch(err => {
-//       // Send a error message in response
-//       res.json({ message: `There was an error creating ${req.body.title} book: ${err}` })
-//     })
-// }
+exports.reviewCreate = async (req, res) => {
 
-// // Remove specific book
-// exports.booksDelete = async (req, res) => {
-//   // Find specific book in the database and remove it
-//   knex('books')
-//     .where('id', req.body.id) // find correct record based on id
-//     .del() // delete the record
-//     .then(() => {
-//       // Send a success message in response
-//       res.json({ message: `Book ${req.body.id} deleted.` })
-//     })
-//     .catch(err => {
-//       // Send a error message in response
-//       res.json({ message: `There was an error deleting ${req.body.id} book: ${err}` })
-//     })
-// }
+  knex("review")
+    .insert({
+  
+      user_id: req.body.user_id,
+      r_id: req.body.r_id,
+      rating: req.body.rating,
+      review: req.body.review,
+      timestamp: req.body.timestamp,
+    })
+    .then(() => {
+     
+      res.json({ message: "recorded" });
+    })
+    .catch((err) => {
+     
 
-// // Remove all books on the list
-// exports.booksReset = async (req, res) => {
-//   // Remove all books from database
-//   knex
-//     .select('*') // select all records
-//     .from('books') // from 'books' table
-//     .truncate() // remove the selection
-//     .then(() => {
-//       // Send a success message in response
-//       res.json({ message: 'Book list cleared.' })
-//     })
-//     .catch(err => {
-//       // Send a error message in response
-//       res.json({ message: `There was an error resetting book list: ${err}.` })
-//     })
-// }
+      res.json({ message: `There was an error creating review: ${err}` });
+    });
+};
+
+exports.updateUserEmail = async (req, res) => {
+  
+  knex("users")
+    .where({ user_id: req.body.user_id })
+    .update({
+      
+
+      
+      
+      email: req.body.email,
+    })
+    .then(() => {
+      
+      res.json({ message: "updated" });
+    })
+    .catch((err) => {
+      
+
+      res.json({ message: `There was an error updating info: ${err}` });
+    });
+};
+exports.updateUserPhone = async (req, res) => {
+  
+  knex("users")
+    .where({ user_id: req.body.user_id })
+    .update({
+      
+
+      
+      
+
+      u_phoneno: req.body.u_phoneno,
+    })
+    .then(() => {
+      
+      res.json({ message: "updated" });
+    })
+    .catch((err) => {
+      
+
+      res.json({ message: `There was an error updating info: ${err}` });
+    });
+};
+
+exports.registerService = async (req, res) => {
+  
+  knex("service_provider")
+    .insert({
+      
+      sp_id: req.body.user_id,
+      service_category: req.body.service_category,
+      pincode: req.body.pincode,
+      uname: req.body.uname,
+    })
+    .then(() => {
+      
+      
+      knex(req.body.service_category)
+        .insert({
+          
+          sp_id: req.body.user_id,
+          experience: req.body.experience,
+          description: req.body.description,
+        })
+        .then(() => {
+          
+
+          knex("users")
+            .where({ user_id: req.body.user_id })
+            .update({
+              user_type: "SP",
+            })
+            .then(() => {
+              
+              res.json({ message: "listed" });
+            })
+            .catch((err) => {
+              
+
+              res.json({ message: `There was an error updating info: ${err}` });
+            });
+        })
+        .catch((err) => {
+          
+          res.json({ message: `There was an error creating review: ${err}` });
+        });
+    })
+    .catch((err) => {
+      
+      res.json({ message: `There was an error creating review: ${err}` });
+    });
+};
+
+exports.showService = async (req, res) => {
+  
+  
+  if (req.body.pincode != "") {
+    knex("service_provider")
+      .select("uname", "pincode")
+      .where({ service_category: req.body.service_category })
+      .andWhere({ pincode: req.body.pincode })
+      .then((userData) => {
+        res.json(userData);
+      })
+      .catch((err) => {
+        
+        res.json({ message: `There was an error retrieving users: ${err}` });
+      });
+  } else {
+    knex("service_provider")
+      .select("uname", "pincode")
+      .where({ service_category: req.body.service_category })
+      .then((userData) => {
+        res.json(userData);
+      })
+      .catch((err) => {
+        
+        res.json({ message: `There was an error retrieving users: ${err}` });
+      });
+  }
+};
+
+exports.getreviewid = async (req, res) => {
+  
+  knex
+    .select("user_id") 
+    .from("users").where({username:req.body.name}) 
+    .then((userData) => {
+      
+      res.json(userData);
+    })
+    .catch((err) => {
+      
+      res.json({ message: `There was an error retrieving users: ${err}` });
+    });
+};
+
+exports.getreviews = async (req, res) => {
+  
+  knex
+    .select("review") 
+    .from("review").where({r_id:req.body.rid}) 
+    .then((userData) => {
+      
+      res.json(userData);
+    })
+    .catch((err) => {
+      
+      res.json({ message: `There was an error retrieving users: ${err}` });
+    });
+};
+
+exports.adminLogin = async (req, res) => {
+  
+  knex("admin")
+    .where({ username: req.body.username })
+    .pluck("password")
+    .then((userData) => {
+      
+      if (userData == req.body.password) {
+        res.json({ message: `successful` });
+      } else {
+        res.json({ message: "incorrect" });
+      }
+    })
+    .catch((err) => {
+      
+      res.json({ message: `There was an error retrieving users: ${err}` });
+    });
+};
+
+exports.commentCreate = async (req, res) => {
+  
+  knex("comments")
+    .insert({
+      
+      sp_id: req.body.sp_id,
+      timestamp: req.body.timestamp,
+      description:req.body.description
+    })
+    .then(() => {
+      
+      res.json({ message: "recorded" });
+    })
+    .catch((err) => {
+      
+
+      res.json({ message: `There was an error creating review: ${err}` });
+    });
+};
+
+
+exports.commentView = async (req, res) => {
+  
+  knex.select("description") 
+  .from("comments").where({sp_id:req.body.sp_id})
+    .then((userData) => {
+      
+      res.json(userData);
+    })
+    .catch((err) => {
+      
+
+      res.json({ message: `There was an error creating review: ${err}` });
+    });
+};
+
+exports.commentALLView = async (req, res) => {
+  
+  knex.select("*") 
+  .from("comments")
+    .then((userData) => {
+      
+      res.json(userData);
+    })
+    .catch((err) => {
+      
+
+      res.json({ message: `There was an error creating review: ${err}` });
+    });
+};
+
+exports.myListings = async (req, res) => {
+  
+  knex("service_provider")
+    .where({ sp_id: req.body.user_id})
+    .select("service_category","pincode")
+    .then((userData) => {
+      
+        res.json(userData);
+    })
+    .catch((err) => {
+      
+      res.json({ message: `There was an error retrieving listings: ${err}` });
+    });
+};
+
+exports.getAvgRating=async(req,res)=>{
+  knex.avg({rating:'rating'}).from('review').where({r_id:req.body.user_id}).then((userData)=>{
+    res.json(userData);
+  }).catch((err) => {
+    
+    res.json({ message: `There was an error retrieving listings: ${err}` });
+  });
+};

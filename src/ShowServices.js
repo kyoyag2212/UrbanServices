@@ -1,55 +1,55 @@
+import React, { Component, ResourceForm } from "react";
 import Home from "./Home";
-import "./assets/css/index.css";
 import logo from "./assets/img/logo.png";
 import img1 from "./assets/img/home-service-1.png";
 import img2 from "./assets/img/home-service-2.jpg";
 import { Router, Link, Route, useHistory } from "react-router-dom";
-import React, { useState, useEffect } from "react";
-import { RatingView } from "react-simple-star-rating";
+import { useState,useEffect } from "react";
 import axios from "axios";
 import Table from "./Table.jsx";
 
-const handleViewComment = async (sp_id) => {
+const handleShowseervices = async (pincode) => {
   try {
     const response = await axios.post(
-      "http://localhost:4001/users/getcomments",
+      "http://localhost:4001/users/showservice",
       {
-        sp_id: localStorage.getItem("user_id"),
+        service_category: localStorage.getItem("name"),
+        pincode: pincode,
       }
     );
     return response.data;
   } catch (error) {
     console.log(error);
-    return false;
   }
 };
 
-function Comments() {
+function ShowServices() {
   const history = useHistory();
-  const uname = localStorage.getItem("username");
-
   let data = [
     {
       uname: "Table is Empty",
-      pincode: 0,
-    },
+      pincode: 0
+    }
+   
   ];
+  const uname = localStorage.getItem("username");
+  const [pincode, setpincode] = useState("");
   const [tabledata, settabledata] = useState(data);
 
-  const displayComments = async () => {
-    const response = await handleViewComment();
-
+  const displayServices = async () => {
+    const response = await handleShowseervices(pincode);
+    
     console.log(response);
-    if (response !== null || response !== undefined) {
-      settabledata(response);
-    } else {
+    if(response !== null || response !== undefined){
+      settabledata(response)
+    } else{
       console.log(`Response is null`);
     }
   };
+
   useEffect(() => {
-    settabledata(data);
-    displayComments();
-  }, []);
+    displayServices()
+  }, [])
 
   return (
     <div>
@@ -60,6 +60,7 @@ function Comments() {
         rel="stylesheet"
         href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       />
+
       <nav
         className="navbar  navbar-expand-lg navbar-dark justify-content-center"
         style={{ background: "black" }}
@@ -93,33 +94,64 @@ function Comments() {
             <img className="img-fluid float-left" src={img1} />
           </div>
           <div className="col-sm-6">
-            <div className="card1 bg-dark text-white">
+            <div className=" card1 bg-dark text-white">
               <div className="card-header">
-                <h4 className="card-title text-center">Comments</h4>
+                <h2 className="card-title text-center">
+                  <i>Services in Your Area</i>
+                </h2>
+                <br></br>
+                <form class="form-inline justify-content-center">
+                  <input
+                    class="form-control mr-sm-2"
+                    type="text"
+                    placeholder="Pincode"
+                    onChange={(e) => {
+                      setpincode(e.target.value);
+                    }}
+                    value={pincode}
+                    minLength="6"
+                    maxLength="6"
+                  ></input>
+                  <button
+                    class="btn9 btn-dark"
+                    type="button"
+                    onClick={(e) => {
+                      settabledata(data);
+                      displayServices();
+                    }}
+                  >
+                  🔍
+                  </button>
+                </form>
               </div>
               <div className="card-body">
-                <div className="container" style={{ width: "150px" }}>
+                <div className="container " style={{ width: "230px" }}>
                   {/* TABLE CONSTRUCTION*/}
-                  <table id="table" className="table table-dark table-hover">
+                  
+                 
+                
+                  <table id="table" className="table table-dark table-hover ">
                     {/* HEADING FORMATION */}
                     <tbody>
-                      {tabledata !== null && tabledata !== undefined ? (
-                        <Table data={tabledata} />
-                      ) : (
-                        <p>Table is empty</p>
-                      )}
+                    
+                      {
+                        tabledata !== null && tabledata !== undefined ?
+                        <Table data={tabledata} />: <p>Table is empty</p>
+                      }
+                     
                     </tbody>
                   </table>
+                  
                 </div>
               </div>
             </div>
           </div>
-
           <div className="col-sm-3">
-            <img className="img-fluid float-right" src={img2} />
+            <img className="img-fluid float-left" src={img2} />
           </div>
         </div>
         </div>
+        <br></br>
         <footer className="site-footer">
           <div className="container" style={{ overflowX: "hidden" }}>
             <div className="row">
@@ -233,4 +265,5 @@ function Comments() {
     </div>
   );
 }
-export default Comments;
+
+export default ShowServices;

@@ -11,6 +11,7 @@ const handleUserRegister = async (uname, pwd, email1, number) => {
   
  
     try {
+  
       const response=await axios
       .post("http://localhost:4001/users/create", {
         username: uname,
@@ -18,18 +19,22 @@ const handleUserRegister = async (uname, pwd, email1, number) => {
         user_type: "User",
         email: email1,
         u_phoneno: number,
-      })
+      });
       if( response.data.message=='registered')
       {
-        return true
+        return 1
+      }
+      else if( response.data.message=='Unique')
+      {
+        return 2
       }
       else {
         console.log(response.data.message)
-        return false
+        return 3
       }
     } catch (error) {
       console.log(error)
-        return false
+        return 3
     }
 
 
@@ -43,22 +48,44 @@ function Register() {
   const [pwd, setpwd] = useState("");
   const [email1, setemail1] = useState("");
   const [number, setnumber] = useState("");
+  const [cnfrmpwd,setcnfrmpwd]=useState('');
 
   const OnSubmit=async ()=>{
+    if( uname.length>4 && pwd.length>4 )
+    {
+    if(cnfrmpwd==pwd)
+    {
+      const response=await handleUserRegister(uname,pwd,email1,number)
+      if(response==1)
+      {
+        toast.success("Registration Successful!")
+        toast.success("Kindly Login")
+        history.push('/login')
+   
+      }
+      else if(response==2)
+      {
+        toast.error("Username Taken! Try Again")
+      }
+      else
+      {
+        toast.error("Registration Unsuccessful! Try Again")
+      }
+     }
     
-   const response=await handleUserRegister(uname,pwd,email1,pwd)
-   if(response)
-   {
-     toast.success("Registration Successful!")
-     toast.success("Kindly Login")
-     history.push('/login')
+    else
+    {
+      toast.error("Passwords Dont Match")
 
-   }
-   else
-   {
-     toast.error("Registration UnSuccessful! Try Again")
-   }
+    }
   }
+  else{
+    toast.error("Username and Passwords must be atleast 5 character ")
+  }
+}
+
+
+  
 
   return (
     <div>
@@ -91,13 +118,13 @@ function Register() {
             <img className="img-fluid float-left" src={img1} />
           </div>
           <div className="col">
-            <div className="card bg-dark text-white">
+            <div className="card1 bg-dark text-white">
               <div className="card-header">
                 <h4 className="card-title text-center">Register</h4>
               </div>
               <div className="card-body">
                 <form action="login" className="was-validated">
-                  <div className="form-group">
+                  <div className="form-group" >
                     <label htmlFor="uname">Username:</label>
                     <input
                       type="text"
@@ -109,11 +136,12 @@ function Register() {
                         setuname(e.target.value);
                       }}
                       value={uname}
+                      minLength='5'
                       required
                     />
                     <div className="valid-feedback">Valid.</div>
                     <div className="invalid-feedback">
-                      Please fill out this field.
+                      Please fill out this field.Minimum 5 Characters.
                     </div>
                   </div>
 
@@ -130,10 +158,11 @@ function Register() {
                       }}
                       value={pwd}
                       required
+                      minLength='5'
                     />
                     <div className="valid-feedback">Valid.</div>
                     <div className="invalid-feedback">
-                      Please fill out this field.
+                      Please fill out this field.Minimum 5 Characters.
                     </div>
                   </div>
 
@@ -145,13 +174,21 @@ function Register() {
                       id="cnfrmpwd"
                       placeholder="Renter password"
                       name="cnfrmpswd"
+                      onChange={(e) => {
+                        setcnfrmpwd(e.target.value);
+                      }}
+                      value={cnfrmpwd}
+                      minLength='5'
                       required
+                      
                     />
                     <div className="valid-feedback">Valid.</div>
                     <div className="invalid-feedback">
                       Please fill out this field.
                     </div>
                   </div>
+                  
+
 
                   <div className="form-group">
                     <label htmlFor="email1">Email:</label>
@@ -186,6 +223,8 @@ function Register() {
                       }}
                       value={number}
                       required
+                     minLength='10'
+                      maxLength='10'
                     />
                     <div className="valid-feedback">Valid.</div>
                     <div className="invalid-feedback">
@@ -197,7 +236,7 @@ function Register() {
               <div>
                 <div>
                   <button
-                    type="button"
+                    type="submit"
                     className="btn2 btn-primary btn-block"
                     onClick={() =>OnSubmit()}
                   >
@@ -213,8 +252,124 @@ function Register() {
             <img className="img-fluid float-right" src={img2} />
           </div>
         </div>
-      </div>
+        </div>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <footer className="site-footer">
+          <div className="container" style={{ overflowX: "hidden" }}>
+            <div className="row">
+              <div className="col-12 col-md-12">
+                <img
+                  src={logo}
+                  className="img-fluid"
+                  alt="Urban Services"
+                  style={{ width: "120px" }}
+                />
+                <p className="text-justify mt-3">
+                  We at Urban Services know that you and your beloved Home requires intensive care.We serve you the love and care that Your Home 
+                  Derserves💙.We provide the best of services and service provides which makes your home a better place.
+                </p>
+              </div>
+              <div className="col-12 col-md-3">
+                <h6>Cities</h6>
+                <ul className="footer-links">
+                  <li>
+                    <a >Goregaon</a>
+                  </li>
+                  <li>
+                    <a >Mahim</a>
+                  </li>
+                  <li>
+                    <a >Prabhadevi</a>
+                  </li>
+                  <li>
+                    <a>Matunga</a>
+                  </li>
+                </ul>
+              </div>
+              <div className="col-12 col-md-3">
+                <h6>Services</h6>
+                <ul className="footer-links">
+                  <li>
+                    <a href="/#services">Cleaning</a>
+                  </li>
+                  <li>
+                    <a href="/#services">Plumbing</a>
+                  </li>
+                  <li>
+                    <a href="/#services">Househelp</a>
+                  </li>
+                  <li>
+                    <a href="/#services">Electrical Maintainence</a>
+                  </li>
+                  <li>
+                    <a href="#/#services">Cooking</a>
+                  </li>
+                </ul>
+              </div>
+         
+              <div className="col-12 col-md-3">
+                <h6>Workspace</h6>
+                <ul className="footer-links">
+                  <li>
+                   We reside in your Hearts,also you can find us at
+                    Mumbai-400001.
+                  </li>
+                  <li>
+                    <b>Phone: </b>
+                    <a href="tel:9876543210">9876543210</a>
+                  </li>
+                  <li>
+                    <b>Email: </b>
+                    <a href="mailto:support@urbanclap.com">
+                      support@urbanservices.com
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <hr />
+          </div>
+          <div className="container">
+            <div className="row">
+              <div className="col-md-8 col-sm-6 col-xs-12">
+                <p className="copyright-text">
+                  © Copyright 2021 | Urban Services | All right reserved.
+                </p>
+              </div>
+              <div className="col-md-4 col-sm-6 col-xs-12">
+                <ul className="social-icons">
+                  <li>
+                    <a className="facebook" href="#">
+                      <i className="fa fa-facebook" />
+                    </a>
+                  </li>
+                  <li>
+                    <a className="twitter" href="#">
+                      <i className="fa fa-twitter" />
+                    </a>
+                  </li>
+                  <li>
+                    <a className="linkedin" href="#">
+                      <i className="fa fa-linkedin" />
+                    </a>
+                  </li>
+                  <li>
+                    <a className="youtube" href="#">
+                      <i className="fa fa-youtube" />
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </footer>
+      
     </div>
+    
   );
 }
 export default Register;
